@@ -39,6 +39,8 @@ namespace Intsar_Project_API.Controllers
             {
                 return BadRequest("تم التسجيل في المسابقه بالفعل");
             }
+
+            
             var compReg = new CompReg()
             {
                 FullName = compRegVM.FullName,
@@ -56,6 +58,10 @@ namespace Intsar_Project_API.Controllers
                 educational_system = compRegVM.educational_system,
 
             };
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             if (user.Email != compRegVM.Email || user.NationalID != compRegVM.NationalId)
             {
                 return BadRequest("يجب ان يكون الرقم القومي و البريد الالكتروني مطابق لتسجيل الدخول ، راجع صفحتك الشخصية.");
@@ -66,7 +72,7 @@ namespace Intsar_Project_API.Controllers
             user.IsRegSent = true;
             user.Specialization = compRegVM.project_type;
             await _userManager.UpdateAsync(user);
-            return Ok();
+            return Ok("تم ارسال طلب التسجيل في المسابقة");
         }
 
         [HttpGet]

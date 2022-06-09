@@ -69,3 +69,7 @@ E:\Repos\Intsar_Project_API\Intsar_Project_API\Intsar_Project_API\bin\Debug\net5
 E:\Repos\Intsar_Project_API\Intsar_Project_API\Intsar_Project_API\bin\Debug\net5.0\Microsoft.Extensions.Options.dll
 E:\Repos\Intsar_Project_API\Intsar_Project_API\Intsar_Project_API\bin\Debug\net5.0\Microsoft.Extensions.Primitives.dll
 E:\Repos\Intsar_Project_API\Intsar_Project_API\Intsar_Project_API\bin\Debug\net5.0\System.Runtime.CompilerServices.Unsafe.dll
+E:\Repos\Intsar_Project_API\Intsar_Project_API\Intsar_Project_API\bin\Debug\net5.0\System.Net.Http.Formatting.dll
+E:\Repos\Intsar_Project_API\Intsar_Project_API\Intsar_Project_API\bin\Debug\net5.0\System.Web.Http.dll
+E:\Repos\Intsar_Project_API\Intsar_Project_API\Intsar_Project_API\bin\Debug\net5.0\Newtonsoft.Json.dll
+E:\Repos\Intsar_Project_API\Intsar_Project_API\Intsar_Project_API\bin\Debug\net5.0\Newtonsoft.Json.Bson.dll

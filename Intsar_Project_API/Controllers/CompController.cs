@@ -31,16 +31,28 @@ namespace Intsar_Project_API.Controllers
         public async Task<IActionResult> UploadProjectAsync(_ProjectVM projectVM)
         {
 
-            var user = await _userManager.GetUserAsync(User);
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = await _userManager.Users.Where(u => u.UserName == username).FirstOrDefaultAsync();
 
             var compSp = _App.compRegs.Where(b => b.Email == user.Email).FirstOrDefault();
+            if (projectVM.DriveLink == null)
+            {
+                return BadRequest("برجاء ادخال رابط درايف الخاص بمشروعك");
+            }
+            if(compSp.IsprojecSent==true)
+            {
+                return BadRequest("تم ارسال المشروع سابقا ، اذا كان هناك مشكلة برجاء لاتواصل معنا");
+            }
             var project = new _project()
             {
-                FullName = projectVM.FullName,
                 DriveLink = projectVM.DriveLink,
                 Specialization = compSp.project_type,
                 Email = compSp.Email
             };
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             compSp.IsprojecSent = true;
             _App.Add(project);
             _App.SaveChanges();

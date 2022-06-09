@@ -30,26 +30,26 @@ namespace Intsar_Project_API.Controllers
         }
         [HttpPost]
         [Route("Register")]
-        public async Task<IActionResult> Register([FromBody]RegisterVM registerVM)
+        public async Task<IActionResult> Register(RegisterVM registerVM)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await userService.RegisterAsync(registerVM);
             if (!result.IsAuthed)
                 return BadRequest(result.Message);
-            return Ok(new {token=result.Token,expirOn = result.ExpireOn});
+            return Ok(new {token=result.Token,expirOn = result.ExpireOn, Check = true });
         }
 
         [HttpPost]
         [Route("Login")]
-        public async Task<IActionResult> Login([FromBody] LoginVM loginVM)
+        public async Task<IActionResult> Login( LoginVM loginVM)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await userService.LoginAsync(loginVM);
             if (!result.IsAuthed)
-                return BadRequest(result.Message);
-            return Ok(new { token = result.Token, expirOn = result.ExpireOn });
+                return BadRequest(new { result.Message ,result.Check});
+            return Ok(new { token = result.Token, expirOn = result.ExpireOn ,Check= true });
 
         }
 

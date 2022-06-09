@@ -59,7 +59,7 @@ namespace Intsar_Project_API.Controllers
         }
 
         [HttpPost]
-        [Route("compRate")]
+        [Route("compRate/id")]
         public IActionResult compRate(int id, DegCompsVM degCompVM)
         {
             var user = _App.compRegs.Where(b => b.Id == id).FirstOrDefault();
@@ -82,7 +82,7 @@ namespace Intsar_Project_API.Controllers
                 degUserr.compRegId = id;
                 _App.SaveChanges();
             }
-
+            
             var degUser = new DegComp()
             {
                 ProjectIdea = degCompVM.ProjectIdea,
@@ -99,6 +99,10 @@ namespace Intsar_Project_API.Controllers
                 Email = user.Email,
                 compRegId = id,
             };
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             _App.Add(degUser);
             _App.SaveChanges();
             return Ok("تم التقييم");

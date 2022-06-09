@@ -5,6 +5,7 @@ namespace Intsar_Project_API.Models
 {
     public class AuthVM
     {
+        public bool Check { get; set; }
         public string Message { get; set; }
         public bool IsAuthed { get; set; }
         public string UserName { get; set; }

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Mail;
@@ -19,13 +20,13 @@ namespace Intsar_Project_API.Services
     public class UserService : IUserService
     {
         private readonly IConfiguration configuration;
-        private readonly UserManager<ApplicationUser> userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly JWT _jwt;
         public UserService( IConfiguration configuration, UserManager<ApplicationUser> userManager,IOptions<JWT> jwt, SignInManager<ApplicationUser> signManager)
         {
             this.configuration = configuration;
-            this.userManager = userManager;
+            _userManager = userManager;
             this._jwt = jwt.Value;
             this.signInManager = signManager;
         }
@@ -33,17 +34,17 @@ namespace Intsar_Project_API.Services
         public async Task<AuthVM> LoginAsync(LoginVM model)
         {
             var authModel = new AuthVM();
+            var user = await _userManager.FindByEmailAsync(model.Email);
 
-            var user = await userManager.FindByEmailAsync(model.Email);
-
-            if (user is null || !await userManager.CheckPasswordAsync(user, model.Password))
+            if (user is null || !await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 authModel.Message = "Email or Password is incorrect!";
+                authModel.Check = false;
                 return authModel;
             }
 
             var jwtSecurityToken = await CreateJwtToken(user);
-            var rolesList = await userManager.GetRolesAsync(user);
+            var rolesList = await _userManager.GetRolesAsync(user);
 
             authModel.IsAuthed = true;
             authModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
@@ -51,7 +52,7 @@ namespace Intsar_Project_API.Services
             authModel.UserName = user.UserName;
             authModel.ExpireOn = jwtSecurityToken.ValidTo;
             authModel.Roles = rolesList.ToList();
-
+            authModel.Check = true;
             return authModel;
         }
 
@@ -61,17 +62,14 @@ namespace Intsar_Project_API.Services
             return "Loged out";
         }
 
-        //public async Task<string> LoginAsync(string email, string password)
-        //{
-        //    return Validators();
-        //}
+        
 
 
 
         public async Task<AuthVM> RegisterAsync(RegisterVM model)
         {
-            if (await userManager.FindByEmailAsync(model.Email) is not null)
-                return new AuthVM { Message = "يوجد حساب بهذا البريد الالكتروني" };
+            if (await _userManager.FindByEmailAsync(model.Email) is not null)
+                return new AuthVM { Message = "يوجد حساب بهذا البريد الالكتروني" , Check = false };
             
             var user = new ApplicationUser
             {
@@ -83,7 +81,8 @@ namespace Intsar_Project_API.Services
                 NationalID = model.NationalID,
                 gender = model.gender,
             };
-            var result = await userManager.CreateAsync(user);
+            
+            var result = await _userManager.CreateAsync(user,model.Password);
             if(!result.Succeeded)
             {
                 var errors = string.Empty;
@@ -93,7 +92,7 @@ namespace Intsar_Project_API.Services
                 }
                 return new AuthVM { Message = errors};
             }
-            await userManager.AddToRoleAsync(user, "User");
+            await _userManager.AddToRoleAsync(user, "User");
             var jwtSecurityToken = await CreateJwtToken(user);
             return new AuthVM
             {
@@ -103,12 +102,13 @@ namespace Intsar_Project_API.Services
                 Roles = new List<string> { "User"},
                 Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
                 UserName = user.UserName,
+                Check = true
             };
         }
         private async Task<JwtSecurityToken> CreateJwtToken(ApplicationUser user)
         {
-            var userClaims = await userManager.GetClaimsAsync(user);
-            var roles = await userManager.GetRolesAsync(user);
+            var userClaims = await _userManager.GetClaimsAsync(user);
+            var roles = await _userManager.GetRolesAsync(user);
             var roleClaims = new List<Claim>();
 
             foreach (var role in roles)

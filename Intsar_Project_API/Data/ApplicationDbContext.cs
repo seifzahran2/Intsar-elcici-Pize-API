@@ -11,7 +11,7 @@ namespace Intsar_Project_API.Data
             : base(options)
         {
         }
-        
+
         
     }
 }

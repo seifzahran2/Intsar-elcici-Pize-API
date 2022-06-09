@@ -21,7 +21,7 @@ namespace Intsar_Project_API.Models
         [Required(ErrorMessage = "تاكد من ادخال الرقم القومي")]
         [MaxLength(14, ErrorMessage = "لا يزيد الرقم القومي عن 14 رقم")]
         [MinLength(14, ErrorMessage = "لا يقل الرقم القومي عن 14 رقم")]
-        [Phone]
+       
         public string NationalID { get; set; }
         [Required(ErrorMessage = "تاكد من اختيار النوع ")]
         public string gender { get; set; }

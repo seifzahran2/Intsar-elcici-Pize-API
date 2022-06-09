@@ -193,11 +193,6 @@ namespace Intsar_Project_API.Migrations.AppDb
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<string>("Specialization")
                         .HasColumnType("nvarchar(max)");
 
