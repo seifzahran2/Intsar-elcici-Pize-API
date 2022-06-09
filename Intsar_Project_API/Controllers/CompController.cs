@@ -30,18 +30,22 @@ namespace Intsar_Project_API.Controllers
         [Route("UploadProjectAsync")]
         public async Task<IActionResult> UploadProjectAsync(_ProjectVM projectVM)
         {
-
+            var RegModel = new compRegVM();
             var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var user = await _userManager.Users.Where(u => u.UserName == username).FirstOrDefaultAsync();
 
             var compSp = _App.compRegs.Where(b => b.Email == user.Email).FirstOrDefault();
             if (projectVM.DriveLink == null)
             {
-                return BadRequest("برجاء ادخال رابط درايف الخاص بمشروعك");
+                RegModel.Message = "برجاء ادخال رابط درايف الخاص بمشروعك";
+                RegModel.Check = false;
+                return BadRequest(new { RegModel.Message, RegModel.Check });
             }
             if(compSp.IsprojecSent==true)
             {
-                return BadRequest("تم ارسال المشروع سابقا ، اذا كان هناك مشكلة برجاء لاتواصل معنا");
+                RegModel.Message = "تم ارسال المشروع سابقا ، اذا كان هناك مشكلة برجاء لاتواصل معنا";
+                RegModel.Check = false;
+                return BadRequest(new { RegModel.Message, RegModel.Check });
             }
             var project = new _project()
             {

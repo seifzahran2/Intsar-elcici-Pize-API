@@ -36,5 +36,7 @@ namespace Intsar_Project_API.Models.ViewModels
         public string AgeType { get; set; }
         [Required(ErrorMessage = "تأكد من اختيار النظام التعليمي ")]
         public string educational_system { get; set; }
+        public bool Check { get; set; }
+        public string Message { get; set; }
     }
 }

@@ -32,12 +32,14 @@ namespace Intsar_Project_API.Controllers
         [Route("CompRegs")]
         public async Task<IActionResult> CompRegs(compRegVM compRegVM)
         {
-
+            var RegModel = new compRegVM();
             var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var user = await _userManager.Users.Where(u => u.UserName == username).FirstOrDefaultAsync();
             if (user.IsRegSent == true)
             {
-                return BadRequest("تم التسجيل في المسابقه بالفعل");
+                RegModel.Message = "تم التسجيل في المسابقه بالفعل";
+                RegModel.Check = false;
+                return BadRequest(new { RegModel.Message, RegModel.Check });
             }
 
             
@@ -49,7 +51,6 @@ namespace Intsar_Project_API.Controllers
                 BankAccount = compRegVM.BankAccount,
                 NationalId = compRegVM.NationalId,
                 Age = compRegVM.Age,
-                ProjectNum = compRegVM.ProjectNum,
                 CompNum = compRegVM.CompNum,
                 Gender = compRegVM.Gender,
                 project_type = compRegVM.project_type,
@@ -64,7 +65,9 @@ namespace Intsar_Project_API.Controllers
             }
             if (user.Email != compRegVM.Email || user.NationalID != compRegVM.NationalId)
             {
-                return BadRequest("يجب ان يكون الرقم القومي و البريد الالكتروني مطابق لتسجيل الدخول ، راجع صفحتك الشخصية.");
+                RegModel.Message = "يجب ان يكون الرقم القومي و البريد الالكتروني مطابق لتسجيل الدخول ، راجع صفحتك الشخصية.";
+                RegModel.Check = false;
+                return BadRequest(new { RegModel.Message, RegModel.Check });
             }
 
             _App.compRegs.Add(compReg);
